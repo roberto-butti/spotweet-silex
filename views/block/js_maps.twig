@@ -1,0 +1,68 @@
+<script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=false"></script>
+<script type="text/javascript" src="/assets/heatmap/heatmap.js"></script>
+<script type="text/javascript" src="/assets/heatmap/heatmap-gmaps.js"></script>
+
+<script>
+var map;
+function initialize() {
+  var mapOptions = {
+    zoom: 6,
+    center: new google.maps.LatLng(41.89292, 12.48252),
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    
+    disableDefaultUI: false,
+    scrollwheel: true,
+    draggable: true,
+    navigationControl: true,
+    mapTypeControl: false,
+    scaleControl: true,
+    disableDoubleClickZoom: false
+    
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  $.getJSON("{{ url('api_tweet_geo') }}", function(jsondata) {
+          drawHeatmap(jsondata);
+        });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+function drawHeatmap(jsondata) {
+  var heatmap = new HeatmapOverlay(map, {
+        "radius":20,
+        "visible":true, 
+        "opacity":60
+    });
+    
+  var heatmapData = new Object();
+  var count =0;
+  heatmapData.data = new Array();
+  $.each(jsondata, function(key, val) {
+    if (val.coordinates !== null) {
+      count++;
+      console.log(val.coordinates);
+      heatmapData.data.push({lat: val.coordinates.coordinates[0], lng:val.coordinates.coordinates[1], count: 1});
+    }
+  });
+  heatmapData.max = count;
+  console.log(heatmapData);
+  var heatmapData={
+            max: 46,
+            data: [{lat: 33.5363, lng:-117.044, count: 1},{lat: 33.5608, lng:-117.24, count: 1},{lat: 38, lng:-97, count: 1},{lat: 38.9358, lng:-77.1621, count: 1}]
+    };
+    console.log("AA");
+    
+  google.maps.event.addListenerOnce(map, "idle", function(){
+        // this is important, because if you set the data set too early, the latlng/pixel projection doesn't work
+        console.log(heatmap);
+        //console.log(heatmapData);
+        heatmap.setDataSet(heatmapData);
+        
+    });
+  
+  
+  
+}
+</script>
