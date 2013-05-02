@@ -91,6 +91,11 @@
 
 {% block custom_contents %}
   <div class="container">
+    <div class="row" id="graph">
+      <div class="span12">
+        <h2>Tweet by...</h2>
+      </div>
+    </div>
     <div class="row">
       <div class="span4">
         <div id="chart_div_lang" style="width:400; height:300"></div>
@@ -102,15 +107,20 @@
         <div id="chart_div_hashtag" style="width:400; height:300"></div>
       </div>
     </div>
+    <div class="row" id="map">
+      <div class="span12">
+        <h2>Map</h2>
+      </div>
+    </div>
     <div class="row">
       <div class="span12">
-        a
+        
         <div id="map-canvas" style="width:100%; height:800px"></div>
 
       </div>
     </div>
     <footer>
-      <p>&copy; Company 2013</p>
+      <p>&copy; Rbit/Spotweet 2013</p>
     </footer>
   </div><!--/.fluid-container-->
 {% endblock %}
