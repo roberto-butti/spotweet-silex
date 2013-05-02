@@ -4,65 +4,72 @@
 
 <script>
 var map;
+var heatmap;
+var heatmapData;
 function initialize() {
   var mapOptions = {
     zoom: 6,
     center: new google.maps.LatLng(41.89292, 12.48252),
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     
-    disableDefaultUI: false,
-    scrollwheel: true,
-    draggable: true,
-    navigationControl: true,
-    mapTypeControl: false,
-    scaleControl: true,
-    disableDoubleClickZoom: false
-    
   };
-  map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
-  $.getJSON("{{ url('api_tweet_geo') }}", function(jsondata) {
-          drawHeatmap(jsondata);
-        });
+  heatmapData = [];
+  pointArray = new google.maps.MVCArray(heatmapData);
+  
+  
+  map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+  
+  
+  heatmap = new google.maps.visualization.HeatmapLayer({
+    data: pointArray,
+    radius: 20
+  });
+  
+  heatmap.setData(pointArray);
+  heatmap.setMap(map);
+
+  
+  loadGeoHeatmap();
+
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
 function drawHeatmap(jsondata) {
-  var heatmap = new HeatmapOverlay(map, {
-        "radius":20,
-        "visible":true, 
-        "opacity":60
-    });
+  //console.log(jsondata);
+  
     
-  var heatmapData = new Object();
-  var count =0;
-  heatmapData.data = new Array();
+  heatmapData=[];
+  pointArray.clear();
   $.each(jsondata, function(key, val) {
     if (val.coordinates !== null) {
-      count++;
-      console.log(val.coordinates);
-      heatmapData.data.push({lat: val.coordinates.coordinates[0], lng:val.coordinates.coordinates[1], count: 1});
+      //console.log(val.coordinates);
+      pointArray.push(new google.maps.LatLng(val.coordinates.coordinates[1], val.coordinates.coordinates[0]))
     }
   });
-  heatmapData.max = count;
-  console.log(heatmapData);
-  var heatmapData={
-            max: 46,
-            data: [{lat: 33.5363, lng:-117.044, count: 1},{lat: 33.5608, lng:-117.24, count: 1},{lat: 38, lng:-97, count: 1},{lat: 38.9358, lng:-77.1621, count: 1}]
-    };
-    console.log("AA");
-    
-  google.maps.event.addListenerOnce(map, "idle", function(){
-        // this is important, because if you set the data set too early, the latlng/pixel projection doesn't work
-        console.log(heatmap);
-        //console.log(heatmapData);
-        heatmap.setDataSet(heatmapData);
-        
-    });
   
-  
+  console.log(pointArray);
+  if (heatmap) {
+    //resetGeoHeatmap(heatmap);
+  }
   
 }
+
+function loadGeoHeatmap() {
+    
+  $.getJSON("{{ url('api_tweet_geo') }}", function(jsondata) {
+    drawHeatmap(jsondata);
+  });
+}
+
+function resetGeoHeatmap() {
+  pointArray.clear();
+  
+}
+
+setInterval(function() {
+  loadGeoHeatmap();
+      // Do something after 5 seconds
+}, 2000);
 </script>
