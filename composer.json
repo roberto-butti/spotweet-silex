@@ -1,9 +1,9 @@
 {
-    "name"        : "rbit/smagia",
+    "name"        : "rbit/spotweet",
     "type"        : "project",
     "description" : "A Web Application to analyze tweet data. It detect interesting cluster (by time and by geo)",
     "keywords"    : ["twitter", "bigdata", "mongodb", "silex", "cluster"],
-    "homepage"    : "https://github.com/roberto-butti/smagia",
+    "homepage"    : "https://github.com/roberto-butti/spotweet",
     "version"     : "0.0.1-dev",
     "license"     : "MIT",
     "authors"     : [
