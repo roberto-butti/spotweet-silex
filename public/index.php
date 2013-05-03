@@ -14,6 +14,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
 
+$app->register(new Rbit\Spotweet\CollectionServiceProvider());
+
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 $app->mount('/api', include RBIT_DIR_APP.'controllers/api.php');
