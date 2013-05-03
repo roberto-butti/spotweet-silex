@@ -9,16 +9,33 @@ var heatmapData;
 function initialize() {
   var mapOptions = {
     zoom: 6,
+    mapTypeId: "OSM",
+    mapTypeControl: false,
+    streetViewControl: false,
     center: new google.maps.LatLng(41.89292, 12.48252),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    //mapTypeId: google.maps.MapTypeId.ROADMAP,
     
   };
+  
+  
+  
+  
   heatmapData = [];
   pointArray = new google.maps.MVCArray(heatmapData);
   
   
   map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
   
+  map.mapTypes.set("OSM", new google.maps.ImageMapType({
+                getTileUrl: function(coord, zoom) {
+
+                    //return "http://tile.openstreetmap.org/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+                    return "http://b.tile.stamen.com/toner/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+                },
+                tileSize: new google.maps.Size(256, 256),
+                name: "OpenStreetMap",
+                maxZoom: 18
+            }));
   
   heatmap = new google.maps.visualization.HeatmapLayer({
     data: pointArray,
