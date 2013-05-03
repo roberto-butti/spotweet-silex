@@ -3,4 +3,6 @@
 /build
 /composer.lock
 /nbproject
+/twitter-task/config.php
+
 
