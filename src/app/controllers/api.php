@@ -26,9 +26,9 @@ $api->get('/lang2', function() {
   $db = new Mongo('mongodb://localhost');
   $c_tweets = $db->tweets->tweets;
   $date = new DateTime();
-  $hours = 3;
-  
-  $date->sub(new DateInterval('PT' . $hours . 'H'));
+  $time = 1;
+  $unit_time="M";
+  $date->sub(new DateInterval('PT' . $time . $unit_time));
   $mdate = new MongoDate($date->getTimestamp());
   $g = $c_tweets->aggregate(
     array(
@@ -73,9 +73,10 @@ $api->get('/users', function() {
   $db = new Mongo('mongodb://localhost');
   $c_tweets = $db->tweets->tweets;
   $date = new DateTime();
-  $hours = 3;
-  
-  $date->sub(new DateInterval('PT' . $hours . 'H'));
+  $time = 1;
+  $unit_time="M";
+  $date->sub(new DateInterval('PT' . $time . $unit_time));
+
   $mdate = new MongoDate($date->getTimestamp());
   $g = $c_tweets->aggregate(
       array(
@@ -132,9 +133,10 @@ $api->get('/hashtags', function() {
   $db = new Mongo('mongodb://localhost');
   $c_tweets = $db->tweets->tweets;
   $date = new DateTime();
-  $hours = 3;
-  
-  $date->sub(new DateInterval('PT' . $hours . 'H'));
+  $time = 1;
+  $unit_time="M";
+  $date->sub(new DateInterval('PT' . $time . $unit_time));
+
   $mdate = new MongoDate($date->getTimestamp());
   $g = $c_tweets->aggregate(
     array(
