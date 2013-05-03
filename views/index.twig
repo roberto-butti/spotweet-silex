@@ -72,7 +72,7 @@
       // draws it.
       function drawChart() {
         // Create the data table.
-        $.getJSON("{{ url('api_tweet_count_lang2') }}", function(jsondata) {
+        $.getJSON("{{ url('api_tweet_count_lang') }}", function(jsondata) {
           drawChartLang(jsondata);
         });
         $.getJSON("{{ url('api_tweet_count_users') }}", function(jsondata) {

@@ -8,24 +8,10 @@ $api = $app['controllers_factory'];
  * It counts the tweet per lang (group by lang)
  * @return json lang the language count the occourence of the lang
  */
-$api->get('/lang', function() {
-  $db = new Mongo('mongodb://localhost');
-  $c_tweets = $db->tweets->tweets;
-  $keys = array("lang" => 1);
-  $initial = array("count" => 0);
-  $reduce = "function (obj, prev) { prev.count++; }";
-  $g = $c_tweets->group($keys, $initial, $reduce);
-  
-  $response = new Response(json_encode($g['retval']));
-  $response->setTtl(5);
-  return $response;
-})->bind("api_tweet_count_lang");
+$api->get('/lang', function() use($app) {
 
-
-$api->get('/lang2', function() use($app) {
+  $c_tweets = $app['collection_tweet'];
   
-  $db = new Mongo($app['mongo-connection']);
-  $c_tweets = $db->tweets->tweets;
   $date = new DateTime();
   $time = 1;
   $unit_time="M";
@@ -54,7 +40,8 @@ $api->get('/lang2', function() use($app) {
   $response = new Response(json_encode($g['result']));
   $response->setTtl(5);
   return $response;
-})->bind("api_tweet_count_lang2");
+})->bind("api_tweet_count_lang");
+
 
 $api->get('/testdate', function() {
   $db = new Mongo('mongodb://localhost');
@@ -70,9 +57,8 @@ $api->get('/testdate', function() {
   return $response;
 });
 
-$api->get('/users', function() {
-  $db = new Mongo('mongodb://localhost');
-  $c_tweets = $db->tweets->tweets;
+$api->get('/users', function() use($app) {
+  $c_tweets = $app['collection_tweet'];
   $date = new DateTime();
   $time = 1;
   $unit_time="M";
@@ -116,9 +102,8 @@ $api->get('/users', function() {
   return $response;
 })->bind("api_tweet_count_users");
 
-$api->get('/geo', function() {
-  $db = new Mongo('mongodb://localhost');
-  $c_tweets = $db->tweets->tweets;
+$api->get('/geo', function() use($app) {
+  $c_tweets = $app['collection_tweet'];
   $cursor = $c_tweets->find(array(), array("coordinates"=>1))->sort(array("rbit_created_at" => -1))->limit(200);
   $array = iterator_to_array($cursor);
   
@@ -130,9 +115,8 @@ $api->get('/geo', function() {
 
 
 
-$api->get('/hashtags', function() {
-  $db = new Mongo('mongodb://localhost');
-  $c_tweets = $db->tweets->tweets;
+$api->get('/hashtags', function() use($app) {
+  $c_tweets = $app['collection_tweet'];
   $date = new DateTime();
   $time = 1;
   $unit_time="M";
