@@ -4,10 +4,10 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 define("RBIT_DIR_APP", __DIR__.'/../src/app/');
 
-
-
-
 $app = new Silex\Application();
+
+$env = getenv('APP_ENV') ?: 'prod';
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/$env.json"));
 
 $app['debug'] = true;
 $app->register(new Silex\Provider\TwigServiceProvider(), array(

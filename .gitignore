@@ -4,5 +4,7 @@
 /composer.lock
 /nbproject
 /twitter-task/config.php
+/config/prod.json
+
 
 

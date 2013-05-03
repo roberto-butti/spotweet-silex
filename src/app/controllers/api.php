@@ -22,8 +22,9 @@ $api->get('/lang', function() {
 })->bind("api_tweet_count_lang");
 
 
-$api->get('/lang2', function() {
-  $db = new Mongo('mongodb://localhost');
+$api->get('/lang2', function() use($app) {
+  
+  $db = new Mongo($app['mongo-connection']);
   $c_tweets = $db->tweets->tweets;
   $date = new DateTime();
   $time = 1;
