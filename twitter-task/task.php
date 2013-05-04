@@ -19,8 +19,10 @@ class MyStream extends Phirehose {
   {
     parent::__construct($username, $password, $method, $format);
     //connect to the Mongo database, and select collection
-    $m = new Mongo("mongodb://localhost");
-    $this->collection = $m->tweets->tweets;
+    
+    $m = new MongoClient(constant("RBIT_MONGODB_URI"));
+    $db = $m->selectDB(constant("RBIT_MONGODB_DATABASE"));
+    $this->collection = $db->tweets;
     $this->config_saveimage = false;
     $this->config_echotweet = false;
     $this->datas = array();
@@ -28,30 +30,30 @@ class MyStream extends Phirehose {
 
   }
 
-  public function log($string = "PING") {
+  public function mylog($string = "PING") {
     echo $string;
   }
   public function enqueueStatus($status) {
     $data = json_decode($status, true);
-    //$this->log($data["created_at"]." - ");
+    //$this->mylog($data["created_at"]." - ");
     //$d = date("l M j \- g:ia",strtotime($data["created_at"]));
     $d = strtotime($data["created_at"]);
     $md = new MongoDate($d);
     $data["rbit_created_at"] =$md;
-    $this->log(".");
+    $this->mylog(".");
     //var_dump($md);
     $this->datas[]= $data;
     $this->datas_count++;
-    if ($this->datas_count == 100) {
+    if ($this->datas_count == 2) {
       $this->collection->batchInsert($this->datas);
       $this->datas=array();
       $this->datas_count=0;
-      $this->log("O");
+      $this->mylog("O");
 
     }
     
 
-    //$this->log(".");
+    //$this->mylog(".");
 
 
     if ($this->config_saveimage) {
@@ -66,7 +68,7 @@ class MyStream extends Phirehose {
     }
     if ($this->config_echotweet) {
       if (is_array($data) && isset($data['user']) &&  isset($data['text']) && isset($data['user']['screen_name'])) {  
-        $this->log($data['user']['screen_name'] . ': ' . urldecode($data['text']) . "\n");
+        $this->mylog($data['user']['screen_name'] . ': ' . urldecode($data['text']) . "\n");
       }
     }
   }
@@ -75,10 +77,18 @@ class MyStream extends Phirehose {
 
 
 $stream = new MyStream(constant('RBIT_CONFIG_USERNAME'), constant('RBIT_CONFIG_PASSWORD'), Phirehose::METHOD_FILTER);
+/*
 $stream->setLocationsByCircle(array(
   //array(-122.419416, 37.774929, 2000),
   //array(-74.005973, 40.714353, 2000),
-  array(11.07, 45.15, 1000),
+  //array(11.07, 45.15, 1000),
 ));
+ */
+//lon lat south west, lon lat north east
+$stream->setLocations(
+  array(
+    array(7.00, 37.20, 17.90, 48.00)
+  )
+);
 //$stream->setTrack(array('test));
 $stream->consume();

@@ -5,6 +5,4 @@
 /nbproject
 /twitter-task/config.php
 /config/prod.json
-
-
-
+/config/heroku.json

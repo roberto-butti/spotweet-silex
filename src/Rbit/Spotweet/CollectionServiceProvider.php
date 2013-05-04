@@ -13,9 +13,9 @@ class CollectionServiceProvider implements ServiceProviderInterface{
     
     $app['collection_tweet'] = $app->share(function () use ($app) {
       
-      $db = new \Mongo($app['mongo-connection']);
-      $c_tweets = $db->tweets->tweets;
-      
+      $mc = new \MongoClient($app['mongo-connection']);
+      $db = $mc->selectDB($app['mongo-database']);
+      $c_tweets = $db->tweets;
       return $c_tweets;
     });
   }

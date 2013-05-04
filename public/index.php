@@ -6,8 +6,22 @@ define("RBIT_DIR_APP", __DIR__.'/../src/app/');
 
 $app = new Silex\Application();
 
-$env = getenv('APP_ENV') ?: 'prod';
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/$env.json"));
+$env = getenv('APP_ENV') ?: 'heroku';
+$config_filename = __DIR__."/../config/$env.json";
+if (file_exists($config_filename)) {
+  $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/$env.json"));
+  $mongo_url=parse_url($app["mongo-connection"]);
+  //print_r($mongo_url);
+  
+  $dbname = str_replace("/", "", $mongo_url["path"]);
+  $app["mongo-database"]=$dbname;
+} else {
+  
+  $mongo_url = parse_url(getenv("MONGO_URL"));
+  $dbname = str_replace("/", "", $mongo_url["path"]);
+  $app["mongo-connection"]= $mongo_url;
+  $app["mongo-database"]=$dbname;
+}
 
 $app['debug'] = true;
 $app->register(new Silex\Provider\TwigServiceProvider(), array(

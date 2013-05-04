@@ -161,9 +161,9 @@ $api->get('/hashtags', function() use($app) {
 
 
 
-$api->get('/ensureindex', function() {
-  $db = new Mongo('mongodb://localhost');
-  $c_tweets = $db->tweets->tweets;
+$api->get('/ensureindex', function() use ($app){
+  $c_tweets = $app['collection_tweet'];
+  
   $c_tweets->ensureIndex('user.screen_name');
   $c_tweets->ensureIndex('lang');
   $c_tweets->ensureIndex('created_at');
